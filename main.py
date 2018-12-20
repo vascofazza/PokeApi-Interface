@@ -25,6 +25,14 @@ tipo_label = Label(window, text="Tipo: ")
 
 tipo_label.grid(column=0, row=2)
 
+peso_label = Label(window, text="Peso: ")
+
+peso_label.grid(column=0, row=3)
+
+altezza_label = Label(window, text="Altezza: ")
+
+altezza_label.grid(column=0, row=4)
+
 front_sprite_label = Label(window)
 
 front_sprite_label.grid(column=1, row=1)
@@ -40,6 +48,14 @@ front_sprite_s_label.grid(column=2, row=1)
 back_sprite_s_label = Label(window)
 
 back_sprite_s_label.grid(column=2, row=2)
+
+mosse_box = Listbox(window, height=10)
+
+mosse_box.grid(column=0, row=5)
+
+stat_box = Listbox(window, height=10)
+
+stat_box.grid(column=1, row=5)
 
 def load_sprite(name, sprite):
     label = None
@@ -63,6 +79,14 @@ def clicked():
     pokemon = api.get_pokemon(poke_name=txt.get())
     name_label.configure(text='Nome: ' + pokemon.name)
     tipo_label.configure(text='Tipo: ' + pokemon.get_tipo())
+    altezza_label.configure(text='Altezza: '+str(pokemon.height))
+    peso_label.configure(text='Peso: ' + str(pokemon.weight))
+    for idx, mossa in enumerate(pokemon.get_mosse()):
+        mosse_box.insert(idx, mossa)
+    for idx, spec in enumerate([name+" - " + str(spec) for name, spec in pokemon.get_stats().items()]):
+        stat_box.insert(idx, spec)
+    #mosse_box.configure(listvariable=pokemon.get_mosse())
+    #stat_box.configure(listvariable=[name+" - " + str(spec) for name, spec in pokemon.get_stats().items()])
     for name, sprite in pokemon.get_sprites().items():
         load_sprite(name, sprite)
 
