@@ -50,6 +50,10 @@ class Pokemon:
     def __init__(self, data):
         self.data = data
         self.name = data['name']
+        self.height = data['height']
+        self.weight = data['weight']
+        self.id = int(data['id'])
+        self.order = int(data['order'])
 
     def get_sprites(self):
         pass
@@ -58,10 +62,18 @@ class Pokemon:
         pass
 
     def get_mosse(self):
-        pass
+        mosse = self.data['moves']
+
+    def get_stats(self):
+        stats = self.data['stats']
+
+    def get_tipo(self):
+        types = self.data['types']
+        return '-'.join([type['type']['name'] for type in types])
 
     def __str__(self):
-        return self.name
+        return 'Nome: %s\nTipo: %s\nOrdine: %d\nPeso: %s\nAltezza: %s'%\
+               (self.name, self.get_tipo(), self.order, self.weight, self.height)
 
 
 if __name__ == '__main__':
