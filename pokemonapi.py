@@ -2,7 +2,7 @@ import requests
 import json
 
 
-class Pokemonapi:
+class PokemonApi:
     api_url_base = 'https://pokeapi.co/api/v2/'
 
     def get_pokemon_form(self, pokemon):
@@ -24,6 +24,14 @@ class Pokemonapi:
         sprites = pokeform['sprites']
         return {key: self.raw_requests(values) for key, values in sprites.items()}
 
+    def get_evolutions(self, pokemon):
+        api_evls = 'evolution-chain'
+        result = self._request(api_evls, value=pokemon.id)
+        if len(result['chain']['evolves_to']) > 0:
+            evolution = result['chain']['evolves_to'][0]['species']['name']
+            return self.get_pokemon(poke_name=evolution)
+        return None
+
     def raw_requests(self, url):
         response = requests.get(url)
         if response.status_code == 200:
@@ -35,7 +43,9 @@ class Pokemonapi:
         if url:
             response = requests.get(url)
         elif value:
-            response = requests.get(Pokemonapi().api_url_base + '/'.join([enty_point, value + '/']))
+            if type(value) == int:
+                value = str(value)
+            response = requests.get(PokemonApi().api_url_base + '/'.join([enty_point, value + '/']))
         else:
             raise ValueError('Nessun valore specificato')
         if response.status_code == 200:
@@ -45,7 +55,7 @@ class Pokemonapi:
 
 
 class Pokemon:
-    api = Pokemonapi()
+    api = PokemonApi()
 
     def __init__(self, data):
         self.data = data
@@ -56,16 +66,20 @@ class Pokemon:
         self.order = int(data['order'])
 
     def get_sprites(self):
-        pass
+        sprites = Pokemon.api.get_pokemon_sprites(self)
+        return sprites
 
-    def get_evoluzioni(self):
-        pass
+    def get_evoluzione(self):
+        evoluzione = Pokemon.api.get_evolutions(self)
+        return evoluzione
 
     def get_mosse(self):
         mosse = self.data['moves']
+        return [mossa['move']['name'] for mossa in mosse]
 
     def get_stats(self):
         stats = self.data['stats']
+        return {stat['stat']['name']:stat['base_stat'] for stat in stats}
 
     def get_tipo(self):
         types = self.data['types']
@@ -77,7 +91,11 @@ class Pokemon:
 
 
 if __name__ == '__main__':
-    api = Pokemonapi()
+    api = PokemonApi()
     for x in range(1, 21):
         pokemon = api.get_pokemon(poke_num=x)
         print(pokemon)
+        print(pokemon.get_mosse())
+        print(pokemon.get_sprites())
+        print(pokemon.get_evoluzione())
+        print(pokemon.get_stats())
