@@ -72,8 +72,8 @@ class Pokemon:
         return '-'.join([type['type']['name'] for type in types])
 
     def __str__(self):
-        return 'Nome: %s\nTipo: %s\nOrdine: %d\nPeso: %s\nAltezza: %s'%\
-               (self.name, self.get_tipo(), self.order, self.weight, self.height)
+        return 'Nome: %s\nTipo: %s\nOrdine: %d\nPeso: %s\nAltezza: %s' % (
+        self.name, self.get_tipo(), self.order, self.weight, self.height)
 
 
 if __name__ == '__main__':
